@@ -208,6 +208,6 @@ void loop() {
 Contributions are welcome! Please fork the repository and submit a pull request with your improvements.
 
 ## Author
-**Ajang Rahmat**  
+**@Aidil521**  
 [GitHub](https://github.com/Aidil521)  
 [Email](mailto:muhamadaidil776@mail.com)
