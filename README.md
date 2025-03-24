@@ -4,7 +4,8 @@
 AHRS_BNO055 is a lightweight library designed to provide essential functionalities for Arduino with minimal footprint. It is ideal for resource-constrained projects where efficiency and simplicity are crucial.
 
 ## Features
-- Reading Sensor AHRS with I2C Communication
+- Reading Sensor AHRS BNO055 with I2C Communication
+- Used to read Accel, Gyro, Magneto, Euler, Quaternion, Linear Accel, Gravity and Temperature.
 
 ## Installation
 1. Download the latest release from [GitHub](https://github.com/Aidil521/AHRS_BNO055).
