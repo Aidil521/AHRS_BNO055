@@ -47,7 +47,7 @@ typedef class  {
   uint8_t setGyrOffsets(int16_t *Data);
   void setAccRadiusOffsets(int16_t *Data);
   void setMagRadiusOffsets(int16_t *Data);
-  bool Init(TwoWire *_i2c, uint8_t _add);
+  bool Init(TwoWire *_i2c, uint8_t _add = BNO055_ADD_SLAVE_L);
   
   uint8_t getCalibStat(uint8_t reg);
   uint8_t getSTStat(uint8_t reg);

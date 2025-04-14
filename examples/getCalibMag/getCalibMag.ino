@@ -9,7 +9,7 @@ void setup() {
   Serial.begin(115200);
   Wire.begin();
   
-  while (!BNO.Init(&Wire, BNO055_ADD_SLAVE_L)) { // Alternate Address: BNO055_ADD_SLAVE_H
+  while (!BNO.Init(&Wire)) { // Alternate Address: BNO055_ADD_SLAVE_H
     Serial.println("Error, failed detection ID BNO055!");
   }
   delay(1000);
