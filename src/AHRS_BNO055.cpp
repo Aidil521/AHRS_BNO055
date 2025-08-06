@@ -16,12 +16,12 @@ Mode 11 : NDOF_FMC
 Mode 12 : NDOF
 */
 uint8_t BNO_Sensor::setMode(uint8_t reg) {
-    return I2C.Read16(BNO055_OPR_MODE, reg);
+    return Read16(BNO055_OPR_MODE, reg);
 }
   
 // Set to reseting system setup sensor
 void BNO_Sensor::setReset(uint8_t reg) {
-    I2C.Write16(BNO055_SYS_TRIGGER, (1 << reg));
+    Write16(BNO055_SYS_TRIGGER, (1 << reg));
     delay(10);
 }
 
@@ -31,7 +31,7 @@ Mode 1 : Low Power
 Mode 2 : Suspend
 */
 void BNO_Sensor::setPower(uint8_t reg) {
-    I2C.Write16(BNO055_PWR_MODE, reg);
+    Write16(BNO055_PWR_MODE, reg);
     delay(10);
 }
 
@@ -44,7 +44,7 @@ Bit 7 : Set Orientation Mode to Window Orientation or Android Orientation
 Datasheet page 70
 */
 void BNO_Sensor::setUnitSel(uint8_t sys, uint8_t temp, uint8_t eul, uint8_t gyr, uint8_t acc) {
-    I2C.Write16(BNO055_UNIT_SEL, (sys << BNO055_SYS_UNIT) | (temp << BNO055_TEMP_UNIT) | (eul << BNO055_EUL_UNIT) | (gyr << BNO055_GYR_UNIT) | (acc << BNO055_ACC_UNIT));
+    Write16(BNO055_UNIT_SEL, (sys << BNO055_SYS_UNIT) | (temp << BNO055_TEMP_UNIT) | (eul << BNO055_EUL_UNIT) | (gyr << BNO055_GYR_UNIT) | (acc << BNO055_ACC_UNIT));
     COEF_UNIT_EUL = (eul) ? COEF_UNIT_RAD : COEF_UNIT_DEG;
     COEF_UNIT_GYR = (gyr) ? COEF_UNIT_RPS : COEF_UNIT_DPS;
     COEF_UNIT_ACC = (acc) ? COEF_UNIT_MG  : COEF_UNIT_MPS2;
@@ -58,7 +58,7 @@ Bit 5-7 : Set Power mode Accelerometer config check in datasheet
 */
 void BNO_Sensor::setAccConfig(uint8_t pwr, uint8_t bw, uint8_t range) {
     setMode(OPR_CFG_MODE);
-    I2C.Write16(BNO055_ACC_CONFIG, (pwr << BNO055_ACC_PWR_MODE) | (bw << BNO055_ACC_BW) | (range << BNO055_ACC_RANGE));
+    Write16(BNO055_ACC_CONFIG, (pwr << BNO055_ACC_PWR_MODE) | (bw << BNO055_ACC_BW) | (range << BNO055_ACC_RANGE));
     delay(10);
 }
 
@@ -69,7 +69,7 @@ Bit 5-6 : Set Power mode Magnetometer config check in datasheet
 */
 void BNO_Sensor::setMagConfig(uint8_t pwr, uint8_t opr, uint8_t rate) {
     setMode(OPR_CFG_MODE);
-    I2C.Write16(BNO055_MAG_CONFIG, (pwr << BNO055_CFG_PWR_MODE) | (opr << BNO055_CFG_OPR_MODE) | (rate << BNO055_CFG_RATE_MODE));
+    Write16(BNO055_MAG_CONFIG, (pwr << BNO055_CFG_PWR_MODE) | (opr << BNO055_CFG_OPR_MODE) | (rate << BNO055_CFG_RATE_MODE));
     delay(10);
 }
   
@@ -83,8 +83,8 @@ Bit 0-2 : Set Power mode Gyroscope config check in datasheet
 */
 void BNO_Sensor::setGyrConfig(uint8_t pwr, uint8_t bw, uint8_t range) {
     setMode(OPR_CFG_MODE);
-    I2C.Write16(BNO055_GYR_CONFIG_0, (bw  << BNO055_GYR_BW) | (range << BNO055_GYR_RANGE));
-    I2C.Write16(BNO055_GYR_CONFIG_1, (pwr << BNO055_GYR_PWR_MODE));
+    Write16(BNO055_GYR_CONFIG_0, (bw  << BNO055_GYR_BW) | (range << BNO055_GYR_RANGE));
+    Write16(BNO055_GYR_CONFIG_1, (pwr << BNO055_GYR_PWR_MODE));
     delay(10);
 }
   
@@ -93,8 +93,9 @@ Default Orientation sensor P2
 Check in datasheet for configuration
 */
 void BNO_Sensor::setAxisRemap(uint8_t remap) {
-    I2C.Write16(BNO055_AXIS_MAP_CFG,  (uint8_t)(COEF_REMAP[remap] >> 8));
-    I2C.Write16(BNO055_AXIS_MAP_SIGN, (uint8_t)(COEF_REMAP[remap] & 0xFF));
+    Write16(BNO055_AXIS_MAP_CFG,  (uint8_t)(COEF_REMAP[remap] >> 8));
+    Write16(BNO055_AXIS_MAP_SIGN, (uint8_t)(COEF_REMAP[remap] & 0xFF));
+    COEF_HEADING = COEF_HEADING_P[remap];
     delay(10);
 }
 
@@ -107,10 +108,10 @@ Byte 3 MSB Accelerometer Y
 Byte 4 LSB Accelerometer Z
 Byte 5 MSB Accelerometer Z
 */
-uint8_t BNO_Sensor::setAccOffsets(int16_t *Data) {
-    I2C.WriteBytes(BNO055_ACC_OFFSET_X_LSB, (uint8_t *)Data, 6);
+void BNO_Sensor::setAccOffsets(int16_t *Data) {
+    WriteBytes(BNO055_ACC_OFFSET_X_LSB, (uint8_t *)Data, 6);
     delay(10);
-    return getCalibStat(BNO055_CALIB_STAT_ACC);
+    // return getCalibStat(BNO055_CALIB_STAT_ACC);
 }
   
 /*
@@ -122,10 +123,10 @@ Byte 3 MSB Magnetometer Y
 Byte 4 LSB Magnetometer Z
 Byte 5 MSB Magnetometer Z
 */
-uint8_t BNO_Sensor::setMagOffsets(int16_t *Data) {
-    I2C.WriteBytes(BNO055_MAG_OFFSET_X_LSB, (uint8_t *)Data, 6);
+void BNO_Sensor::setMagOffsets(int16_t *Data) {
+    WriteBytes(BNO055_MAG_OFFSET_X_LSB, (uint8_t *)Data, 6);
     delay(10);
-    return getCalibStat(BNO055_CALIB_STAT_MAG);
+    // return getCalibStat(BNO055_CALIB_STAT_MAG);
 }
 
 /*
@@ -137,10 +138,10 @@ Byte 3 MSB Gyroscope Y
 Byte 4 LSB Gyroscope Z
 Byte 5 MSB Gyroscope Z
 */
-uint8_t BNO_Sensor::setGyrOffsets(int16_t *Data) {
-    I2C.WriteBytes(BNO055_GYR_OFFSET_X_LSB, (uint8_t *)Data, 6);
+void BNO_Sensor::setGyrOffsets(int16_t *Data) {
+    WriteBytes(BNO055_GYR_OFFSET_X_LSB, (uint8_t *)Data, 6);
     delay(10);
-    return getCalibStat(BNO055_CALIB_STAT_GYR);
+    // return getCalibStat(BNO055_CALIB_STAT_GYR);
 }
 
 /*
@@ -149,7 +150,7 @@ Byte 0 LSB Accelerometer Radius
 Byte 1 MSB Accelerometer Radius
 */
 void BNO_Sensor::setAccRadiusOffsets(int16_t *Data) {
-    I2C.WriteBytes(BNO055_ACC_RADIUS_LSB, (uint8_t *)Data, 2);
+    WriteBytes(BNO055_ACC_RADIUS_LSB, (uint8_t *)Data, 2);
     delay(10);
 }
 
@@ -159,14 +160,14 @@ Byte 0 LSB Magnetometer Radius
 Byte 1 MSB Magnetometer Radius
 */
 void BNO_Sensor::setMagRadiusOffsets(int16_t *Data) {
-    I2C.WriteBytes(BNO055_MAG_RADIUS_LSB, (uint8_t *)Data, 2);
+    WriteBytes(BNO055_MAG_RADIUS_LSB, (uint8_t *)Data, 2);
     delay(10);
 }
 
 bool BNO_Sensor::Init(TwoWire *_i2c, uint8_t _add) {
-    I2C.setAddress(_i2c, _add);
+    setAddress(_i2c, _add);
     delay(10);
-    return (I2C.Read8(BNO055_CHIP_ID) == 0xA0) ? 1 : 0;
+    return (Read8(BNO055_CHIP_ID) == 0xA0) ? 1 : 0;
 }
 
 /* Calibration status reading value
@@ -176,7 +177,7 @@ Bit 4-5 : Calibration Status Gyroscope
 Bit 6-7 : Calibration Status All Sensor
 */
 uint8_t BNO_Sensor::getCalibStat(uint8_t reg) {
-    return ((I2C.Read8(BNO055_CALIB_STAT) >> reg) & 0x03);
+    return ((Read8(BNO055_CALIB_STAT) >> reg) & 0x03);
 }
 
 /* System result reading value
@@ -186,7 +187,7 @@ Bit 2 : Status Gyroscope
 Bit 3 : Status MCU
 */
 uint8_t BNO_Sensor::getSTStat(uint8_t reg) {
-    return ((I2C.Read8(BNO055_ST_RESULT) >> reg) & 0x01);
+    return ((Read8(BNO055_ST_RESULT) >> reg) & 0x01);
 }
 
 /* System Status reading value
@@ -198,7 +199,7 @@ uint8_t BNO_Sensor::getSTStat(uint8_t reg) {
 6. System running without fusion algorithm
 */
 uint8_t BNO_Sensor::getSysStat() {
-    return I2C.Read8(BNO055_SYS_STATUS);
+    return Read8(BNO055_SYS_STATUS);
 }
 
 /*
@@ -211,7 +212,7 @@ Byte 4 LSB Accelerometer Z
 Byte 5 MSB Accelerometer Z
 */
 void BNO_Sensor::getAccOffsets(int16_t *Data) {
-    I2C.ReadBytes(BNO055_ACC_OFFSET_X_LSB, (uint8_t*)Data, 6);
+    ReadBytes(BNO055_ACC_OFFSET_X_LSB, (uint8_t*)Data, 6);
 }
 
 /*
@@ -224,7 +225,7 @@ Byte 4 LSB Magnetometer Z
 Byte 5 MSB Magnetometer Z
 */
 void BNO_Sensor::getMagOffsets(int16_t *Data) {
-    I2C.ReadBytes(BNO055_MAG_OFFSET_X_LSB, (uint8_t*)Data, 6);
+    ReadBytes(BNO055_MAG_OFFSET_X_LSB, (uint8_t*)Data, 6);
 }
 
 /*
@@ -237,7 +238,7 @@ Byte 4 LSB Gyroscope Z
 Byte 5 MSB Gyroscope Z
 */
 void BNO_Sensor::getGyrOffsets(int16_t *Data) {
-    I2C.ReadBytes(BNO055_GYR_OFFSET_X_LSB, (uint8_t*)Data, 6);
+    ReadBytes(BNO055_GYR_OFFSET_X_LSB, (uint8_t*)Data, 6);
 }
 
 /*
@@ -246,7 +247,7 @@ Byte 0 LSB Accelerometer Radius
 Byte 1 MSB Accelerometer Radius
 */
 void BNO_Sensor::getAccRadiusOffsets(int16_t *Data) {
-    I2C.ReadBytes(BNO055_ACC_RADIUS_LSB, (uint8_t*)Data, 2);
+    ReadBytes(BNO055_ACC_RADIUS_LSB, (uint8_t*)Data, 2);
 }
 
 /*
@@ -255,10 +256,10 @@ Byte 0 LSB Magnetometer Radius
 Byte 1 MSB Magnetometer Radius
 */
 void BNO_Sensor::getMagRadiusOffsets(int16_t *Data) {
-    I2C.ReadBytes(BNO055_MAG_RADIUS_LSB, (uint8_t*)Data, 2);
+    ReadBytes(BNO055_MAG_RADIUS_LSB, (uint8_t*)Data, 2);
 }
 
-void BNO_Sensor::getAccCalibration(int16_t *acc_offs) {
+void BNO_Sensor::getAccCalib(int16_t *acc_offs) {
     int16_t AccRaw[3] = {0, 0, 0};
     int16_t AccSum[3] = {0, 0, 0};
 
@@ -280,13 +281,13 @@ void BNO_Sensor::getAccCalibration(int16_t *acc_offs) {
     acc_offs[2] = (int16_t)(AccSum[2] / 256);
 }
 
-void BNO_Sensor::getMagCalibration(uint8_t remap, int16_t *mag_offs) {
+// void BNO_Sensor::getMagOffsets(uint8_t remap, int16_t *mag_offs) {
+void BNO_Sensor::getMagCalib(int16_t *mag_offs) {
     int16_t Mag[3] = {0, 0, 0};
     int16_t Min[3] = { 32767,  32767,  32767};
     int16_t Max[3] = {-32768, -32768, -32768};
     
     setMode(OPR_CFG_MODE);
-    setAxisRemap(remap);
     setMagOffsets(mag_offs);
     setMode(OPR_MAG_MODE);
 
@@ -309,7 +310,7 @@ void BNO_Sensor::getMagCalibration(uint8_t remap, int16_t *mag_offs) {
     mag_offs[2] = (int16_t)((Max[2] + Min[2]) / 2);
 }
 
-void BNO_Sensor::getGyrCalibration(int16_t *gyr_offs) {
+void BNO_Sensor::getGyrCalib(int16_t *gyr_offs) {
     int16_t GyrRaw[3] = {0, 0, 0};
     int16_t GyrSum[3] = {0, 0, 0}; //3*gyro
 
@@ -332,75 +333,90 @@ void BNO_Sensor::getGyrCalibration(int16_t *gyr_offs) {
 }
 
 bool BNO_Sensor::getAccRaw(int16_t *Acc) {
-    return I2C.ReadBytes(BNO055_ACC_DATA_X_LSB, (uint8_t*)Acc, 6);
+    return ReadBytes(BNO055_ACC_DATA_X_LSB, (uint8_t*)Acc, 6);
 }
 
 bool BNO_Sensor::getMagRaw(int16_t *Mag) {
-    return I2C.ReadBytes(BNO055_MAG_DATA_X_LSB, (uint8_t*)Mag, 6);
+    return ReadBytes(BNO055_MAG_DATA_X_LSB, (uint8_t*)Mag, 6);
 }
 
 bool BNO_Sensor::getGyrRaw(int16_t *Gyr) {
-    return I2C.ReadBytes(BNO055_GYR_DATA_X_LSB, (uint8_t*)Gyr, 6);
+    return ReadBytes(BNO055_GYR_DATA_X_LSB, (uint8_t*)Gyr, 6);
 }
 
-bool BNO_Sensor::getAccelaration(float *Acc) {
+bool BNO_Sensor::getAccelaration(Axis_3D_t *Acc) {
     int16_t AccRaw[3] = {0, 0, 0};
     if (getAccRaw(AccRaw)) {
-        for (uint8_t i = 0; i < 3; i++) Acc[i] = AccRaw[i] / COEF_UNIT_ACC;
+        Acc->X = AccRaw[0] / COEF_UNIT_ACC;
+        Acc->Y = AccRaw[1] / COEF_UNIT_ACC;
+        Acc->Z = AccRaw[2] / COEF_UNIT_ACC;
         return 1;
     }
     return 0;
 }
 
-bool BNO_Sensor::getMagnetometer(float *Mag) {
+bool BNO_Sensor::getMagnetometer(Axis_3D_t *Mag) {
     int16_t MagRaw[3] = {0, 0, 0};
     if (getMagRaw(MagRaw)) {
-        for (uint8_t i = 0; i < 3; i++) Mag[i] = MagRaw[i] / COEF_UNIT_uT;
+        Mag->X = MagRaw[0] / COEF_UNIT_uT;
+        Mag->Y = MagRaw[1] / COEF_UNIT_uT;
+        Mag->Z = MagRaw[2] / COEF_UNIT_uT;
         return 1;
     }
     return 0;
 }
 
-bool BNO_Sensor::getGyroscope(float *Gyr) {
+bool BNO_Sensor::getGyroscope(Axis_3D_t *Gyr) {
     int16_t GyrRaw[3] = {0, 0, 0};
     if (getGyrRaw(GyrRaw)) {
-        for (uint8_t i = 0; i < 3; i++) Gyr[i] = GyrRaw[i] / COEF_UNIT_GYR;
+        Gyr->X = GyrRaw[0] / COEF_UNIT_GYR;
+        Gyr->Y = GyrRaw[1] / COEF_UNIT_GYR;
+        Gyr->Z = GyrRaw[2] / COEF_UNIT_GYR;
         return 1;
     }
     return 0;
 }
 
-bool BNO_Sensor::getEuler(float *Eul) {
+bool BNO_Sensor::getEuler(Axis_3D_t *Eul) {
     int16_t rx_buff[3] = {0, 0, 0};
-    if (I2C.ReadBytes(BNO055_EUL_DATA_Z_LSB, (uint8_t*)rx_buff, sizeof(rx_buff))) {
-        for (uint8_t i = 0; i < 3; i++) Eul[(i == 0) ? 2 : i - 1] = rx_buff[i] / COEF_UNIT_EUL;
+    if (ReadBytes(BNO055_EUL_DATA_Z_LSB, (uint8_t*)rx_buff, sizeof(rx_buff))) {
+        Eul->X = rx_buff[1] / COEF_UNIT_EUL;
+        Eul->Y = rx_buff[2] / COEF_UNIT_EUL;
+        Eul->Z = rx_buff[0] / COEF_UNIT_EUL;
         return 1;
     }
     return 0;
 }
 
-bool BNO_Sensor::getQuaternion(float *Qua) {
+bool BNO_Sensor::getQuaternion(Axis_4D_t *Qua) {
     int16_t rx_buff[4] = {0, 0, 0, 0};
-    if (I2C.ReadBytes(BNO055_QUA_DATA_W_LSB, (uint8_t*)rx_buff, sizeof(rx_buff))) {
-        for (uint8_t i = 0; i < 4; i++) Qua[i] = rx_buff[i] / COEF_UNIT_LESS;
+    if (ReadBytes(BNO055_QUA_DATA_W_LSB, (uint8_t*)rx_buff, sizeof(rx_buff))) {
+        Qua->W = rx_buff[0] / COEF_UNIT_LESS;
+        Qua->X = rx_buff[1] / COEF_UNIT_LESS;
+        Qua->Y = rx_buff[2] / COEF_UNIT_LESS;
+        Qua->Z = rx_buff[3] / COEF_UNIT_LESS;
         return 1;
     }
     return 0;
 }
 
-bool BNO_Sensor::getAccLinear(float *Lia) {
+bool BNO_Sensor::getAccLinear(Axis_3D_t *Lia) {
     int16_t rx_buff[3] = {0, 0, 0};
-    if (I2C.ReadBytes(BNO055_LIA_DATA_X_LSB, (uint8_t*)rx_buff, sizeof(rx_buff))) {
-        for (uint8_t i = 0; i < 3; i++) Lia[i] = rx_buff[i] / COEF_UNIT_ACC;
+    if (ReadBytes(BNO055_LIA_DATA_X_LSB, (uint8_t*)rx_buff, sizeof(rx_buff))) {
+        Lia->X = rx_buff[0] / COEF_UNIT_ACC;
+        Lia->Y = rx_buff[1] / COEF_UNIT_ACC;
+        Lia->Z = rx_buff[2] / COEF_UNIT_ACC;
         return 1;
     }
     return 0;
 }
 
-bool BNO_Sensor::getGravity(float *Grv) {
+bool BNO_Sensor::getGravity(Axis_3D_t *Grv) {
     int16_t rx_buff[3] = {0, 0, 0};
-    if (I2C.ReadBytes(BNO055_GRV_DATA_X_LSB, (uint8_t*)rx_buff, sizeof(rx_buff))) {
-        for (uint8_t i = 0; i < 3; i++) Grv[i] = rx_buff[i] / COEF_UNIT_ACC;
+    if (ReadBytes(BNO055_GRV_DATA_X_LSB, (uint8_t*)rx_buff, sizeof(rx_buff))) {
+        Grv->X = rx_buff[0] / COEF_UNIT_ACC;
+        Grv->Y = rx_buff[1] / COEF_UNIT_ACC;
+        Grv->Z = rx_buff[2] / COEF_UNIT_ACC;
         return 1;
     }
     return 0;
@@ -408,7 +424,7 @@ bool BNO_Sensor::getGravity(float *Grv) {
 
 bool BNO_Sensor::getTemperature(int8_t *Temp) {
     int8_t rx_buff = 0;
-    if (I2C.ReadBytes(BNO055_DATA_TEMP, (uint8_t*)&rx_buff, sizeof(rx_buff))) {
+    if (ReadBytes(BNO055_DATA_TEMP, (uint8_t*)&rx_buff, sizeof(rx_buff))) {
         *Temp = rx_buff;
         return 1;
     }
@@ -419,7 +435,7 @@ bool BNO_Sensor::getAllData(BNO055_t *AHRS) {
     int16_t rx_buff[23];
     #if defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) || defined(__AVR_ATmega2560__) 
     // Arduino Uno, Nano and Mega reading max 32 byte i2c data
-    if (I2C.ReadBytes(BNO055_ACC_DATA_X_LSB, (uint8_t*)&rx_buff[0], 24)) {
+    if (ReadBytes(BNO055_ACC_DATA_X_LSB, (uint8_t*)&rx_buff[0], 24)) {
         AHRS->ACC.X = rx_buff[0]  / COEF_UNIT_ACC;
         AHRS->ACC.Y = rx_buff[1]  / COEF_UNIT_ACC;
         AHRS->ACC.Z = rx_buff[2]  / COEF_UNIT_ACC;
@@ -436,7 +452,7 @@ bool BNO_Sensor::getAllData(BNO055_t *AHRS) {
         AHRS->EUL.X = rx_buff[10] / COEF_UNIT_EUL;
         AHRS->EUL.Y = rx_buff[11] / COEF_UNIT_EUL;
 
-        if (I2C.ReadBytes(BNO055_QUA_DATA_W_LSB, (uint8_t*)&rx_buff[12], 21)) {
+        if (ReadBytes(BNO055_QUA_DATA_W_LSB, (uint8_t*)&rx_buff[12], 21)) {
             AHRS->QUA.W = rx_buff[12] / COEF_UNIT_LESS;
             AHRS->QUA.X = rx_buff[13] / COEF_UNIT_LESS;
             AHRS->QUA.Y = rx_buff[14] / COEF_UNIT_LESS;
@@ -456,7 +472,7 @@ bool BNO_Sensor::getAllData(BNO055_t *AHRS) {
     }
 
     #else
-    if (I2C.ReadBytes(BNO055_ACC_DATA_X_LSB, (uint8_t*)rx_buff, sizeof(rx_buff) - 1)) {
+    if (ReadBytes(BNO055_ACC_DATA_X_LSB, (uint8_t*)rx_buff, sizeof(rx_buff) - 1)) {
         AHRS->ACC.X = rx_buff[0]  / COEF_UNIT_ACC;
         AHRS->ACC.Y = rx_buff[1]  / COEF_UNIT_ACC;
         AHRS->ACC.Z = rx_buff[2]  / COEF_UNIT_ACC;
@@ -493,4 +509,19 @@ bool BNO_Sensor::getAllData(BNO055_t *AHRS) {
     return 0;
 }
 
+float BNO_Sensor::getHeading(Axis_4D_t *Qua, Axis_3D_t *Mag) {
+    Axis_2D_t Angle = {0, 0};
+    Axis_2D_t Magno = {0, 0};
+
+    // Calculate angle rad with quaternion
+    Angle.X = asinf(2.0f * (Qua->W * Qua->X + Qua->Y * Qua->Z)); // Rad Roll
+    Angle.Y = asinf(2.0f * (Qua->W * Qua->Y - Qua->X * Qua->Z)); // Rad Pitch
+
+    // Calculate compensation heading
+    Magno.X = Mag->X * cosf(Angle.Y) + Mag->Z * sinf(Angle.Y);
+    Magno.Y = Mag->X * sinf(Angle.X) * sinf(Angle.Y) + Mag->Y * cosf(Angle.X) - Mag->Z * sinf(Angle.X) * cosf(Angle.Y);
+
+    return wrap((atan2f(Magno.Y, Magno.X) * RAD_TO_DEG) - COEF_HEADING, 180);
+}
+  
 BNO_Sensor BNO;

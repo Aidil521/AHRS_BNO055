@@ -1,25 +1,26 @@
 #include <AHRS_BNO055.h>
 
 // Read datasheet and file BNO055_REG.h if want to set configuration BNO055
-int16_t AccOff[3]  = {0, 0, 0};
-int16_t sAccOff[3] = {0, 0, 0};
+int16_t MagOff[3]  = {0, 0, 0};
+int16_t sMagOff[3] = {0, 0, 0};
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
   Wire.begin();
   
-  while (!BNO.Init(&Wire, BNO055_ADD_SLAVE_L)) { // Alternate Address: BNO055_ADD_SLAVE_H
+  while (!BNO.Init(&Wire)) { // Alternate Address: BNO055_ADD_SLAVE_H
     Serial.println("Error, failed detection ID BNO055!");
   }
   delay(1000);
-  Serial.println("🔄 Mulai kalibrasi manual accelerometer BNO055...");
-  BNO.getAccCalibration(sAccOff);
+  Serial.println("🔄 Mulai kalibrasi manual magnetometer BNO055...");
+  // BNO.getMagCalibration(REMAP_CFG_P0, sMagOff);
+  BNO.getMagCalib(sMagOff);
   Serial.println("✅ Kalibrasi selesai.");
-  Serial.print("Offset X: "); Serial.println(sAccOff[0]);
-  Serial.print("Offset Y: "); Serial.println(sAccOff[1]);
-  Serial.print("Offset Z: "); Serial.println(sAccOff[2]);
-  BNO.setAccOffsets(sAccOff);
+  Serial.print("Offset X: "); Serial.println(sMagOff[0]);
+  Serial.print("Offset Y: "); Serial.println(sMagOff[1]);
+  Serial.print("Offset Z: "); Serial.println(sMagOff[2]);
+  BNO.setMagOffsets(sMagOff);
   Serial.println("Write Data Offset on BNO055");
 
   if (BNO.setMode(OPR_CFG_MODE) == OPR_CFG_MODE) Serial.println("OPR_CFG_MODE");
@@ -32,21 +33,21 @@ void setup() {
   if (BNO.setMode(OPR_NDOF_MODE) == OPR_NDOF_MODE) Serial.println("OPR_NDOF_MODE");
   Serial.println("Wait timeout 5s");
   Serial.println("Read Data Offset on BNO055");
-  BNO.getAccOffsets(AccOff);
-  Serial.println(AccOff[0]);
-  Serial.println(AccOff[1]);
-  Serial.println(AccOff[2]);
+  BNO.getMagOffsets(MagOff);
+  Serial.println(MagOff[0]);
+  Serial.println(MagOff[1]);
+  Serial.println(MagOff[2]);
   delay(5000);
 }
 
 void loop() {
   BNO055_t AHRS;
-  if (BNO.getAccelaration((float*)&AHRS.ACC)) {
-    Serial.println("ACC X : " + String(AHRS.ACC.X));
-    Serial.println("ACC Y : " + String(AHRS.ACC.Y));
-    Serial.println("ACC Z : " + String(AHRS.ACC.Z));
+  if (BNO.getMagnetometer(&AHRS.MAG)) {
+    Serial.println("MAG X : " + String(AHRS.MAG.X));
+    Serial.println("MAG Y : " + String(AHRS.MAG.Y));
+    Serial.println("MAG Z : " + String(AHRS.MAG.Z));
   }
-  if (BNO.getEuler((float*)&AHRS.EUL)) {
+  if (BNO.getEuler(&AHRS.EUL)) {
     Serial.println("EUL X : " + String(AHRS.EUL.X));
     Serial.println("EUL Y : " + String(AHRS.EUL.Y));
     Serial.println("EUL Z : " + String(AHRS.EUL.Z));

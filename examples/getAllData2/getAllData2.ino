@@ -34,38 +34,38 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   BNO055_t AHRS;
-  if (BNO.getAccelaration((float*)&AHRS.ACC)) {
+  if (BNO.getAccelaration(&AHRS.ACC)) {
     Serial.println("ACC X : " + String(AHRS.ACC.X));
     Serial.println("ACC Y : " + String(AHRS.ACC.Y));
     Serial.println("ACC Z : " + String(AHRS.ACC.Z));
   }
-  if (BNO.getMagnetometer((float*)&AHRS.MAG)) {
+  if (BNO.getMagnetometer(&AHRS.MAG)) {
     Serial.println("MAG X : " + String(AHRS.MAG.X));
     Serial.println("MAG Y : " + String(AHRS.MAG.Y));
     Serial.println("MAG Z : " + String(AHRS.MAG.Z));
   }
-  if (BNO.getGyroscope((float*)&AHRS.GYR)) {
+  if (BNO.getGyroscope(&AHRS.GYR)) {
     Serial.println("GYR X : " + String(AHRS.GYR.X));
     Serial.println("GYR Y : " + String(AHRS.GYR.Y));
     Serial.println("GYR Z : " + String(AHRS.GYR.Z));
   }
-  if (BNO.getEuler((float*)&AHRS.EUL)) {
+  if (BNO.getEuler(&AHRS.EUL)) {
     Serial.println("EUL X : " + String(AHRS.EUL.X));
     Serial.println("EUL Y : " + String(AHRS.EUL.Y));
     Serial.println("EUL Z : " + String(AHRS.EUL.Z));
   }
-  if (BNO.getQuaternion((float*)&AHRS.QUA)) {
+  if (BNO.getQuaternion(&AHRS.QUA)) {
     Serial.println("QUA W : " + String(AHRS.QUA.W, 5));
     Serial.println("QUA X : " + String(AHRS.QUA.X, 5));
     Serial.println("QUA Y : " + String(AHRS.QUA.Y, 5));
     Serial.println("QUA Z : " + String(AHRS.QUA.Z, 5));
   }
-  if (BNO.getAccLinear((float*)&AHRS.LIA)) {
+  if (BNO.getAccLinear(&AHRS.LIA)) {
     Serial.println("LIA X : " + String(AHRS.LIA.X));
     Serial.println("LIA Y : " + String(AHRS.LIA.Y));
     Serial.println("LIA Z : " + String(AHRS.LIA.Z));
   }
-  if (BNO.getGravity((float*)&AHRS.GRV)) {
+  if (BNO.getGravity(&AHRS.GRV)) {
     Serial.println("GRV X : " + String(AHRS.GRV.X));
     Serial.println("GRV Y : " + String(AHRS.GRV.Y));
     Serial.println("GRV Z : " + String(AHRS.GRV.Z));

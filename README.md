@@ -56,7 +56,7 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   BNO055_t AHRS;
-  if (BNO.getEuler((float*)&AHRS.EUL)) {
+  if (BNO.getEuler(&AHRS.EUL)) {
     Serial.println("EUL X : " + String(AHRS.EUL.X));
     Serial.println("EUL Y : " + String(AHRS.EUL.Y));
     Serial.println("EUL Z : " + String(AHRS.EUL.Z));
@@ -162,7 +162,7 @@ void setup() {
   }
   delay(1000);
   Serial.println("🔄 Mulai kalibrasi manual magnetometer BNO055...");
-  BNO.getMagCalibration(REMAP_CFG_P0, sMagOff);
+  BNO.getMagCalib(sMagOff);
   Serial.println("✅ Kalibrasi selesai.");
   Serial.print("Offset X: "); Serial.println(sMagOff[0]);
   Serial.print("Offset Y: "); Serial.println(sMagOff[1]);
@@ -189,12 +189,12 @@ void setup() {
 
 void loop() {
   BNO055_t AHRS;
-  if (BNO.getMagnetometer((float*)&AHRS.MAG)) {
+  if (BNO.getMagnetometer(&AHRS.MAG)) {
     Serial.println("MAG X : " + String(AHRS.MAG.X));
     Serial.println("MAG Y : " + String(AHRS.MAG.Y));
     Serial.println("MAG Z : " + String(AHRS.MAG.Z));
   }
-  if (BNO.getEuler((float*)&AHRS.EUL)) {
+  if (BNO.getEuler(&AHRS.EUL)) {
     Serial.println("EUL X : " + String(AHRS.EUL.X));
     Serial.println("EUL Y : " + String(AHRS.EUL.Y));
     Serial.println("EUL Z : " + String(AHRS.EUL.Z));

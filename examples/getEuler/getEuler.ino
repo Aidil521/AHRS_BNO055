@@ -34,7 +34,7 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   BNO055_t AHRS;
-  if (BNO.getEuler((float*)&AHRS.EUL)) {
+  if (BNO.getEuler(&AHRS.EUL)) {
     Serial.println("EUL X : " + String(AHRS.EUL.X));
     Serial.println("EUL Y : " + String(AHRS.EUL.Y));
     Serial.println("EUL Z : " + String(AHRS.EUL.Z));

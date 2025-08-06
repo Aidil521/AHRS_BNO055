@@ -14,7 +14,7 @@ void setup() {
   }
   delay(1000);
   Serial.println("🔄 Mulai kalibrasi manual accelerometer BNO055...");
-  BNO.getAccCalibration(sGyrOff);
+  BNO.getAccCalib(sGyrOff);
   Serial.println("✅ Kalibrasi selesai.");
   Serial.print("Offset X: "); Serial.println(sGyrOff[0]);
   Serial.print("Offset Y: "); Serial.println(sGyrOff[1]);
@@ -41,12 +41,12 @@ void setup() {
 
 void loop() {
   BNO055_t AHRS;
-  if (BNO.getGyroscope((float*)&AHRS.GYR)) {
+  if (BNO.getGyroscope(&AHRS.GYR)) {
     Serial.println("GYR X : " + String(AHRS.GYR.X));
     Serial.println("GYR Y : " + String(AHRS.GYR.Y));
     Serial.println("GYR Z : " + String(AHRS.GYR.Z));
   }
-  if (BNO.getEuler((float*)&AHRS.EUL)) {
+  if (BNO.getEuler(&AHRS.EUL)) {
     Serial.println("EUL X : " + String(AHRS.EUL.X));
     Serial.println("EUL Y : " + String(AHRS.EUL.Y));
     Serial.println("EUL Z : " + String(AHRS.EUL.Z));
