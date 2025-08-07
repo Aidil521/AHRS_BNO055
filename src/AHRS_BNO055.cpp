@@ -523,5 +523,9 @@ float BNO_Sensor::getHeading(Axis_4D_t *Qua, Axis_3D_t *Mag) {
 
     return wrap((atan2f(Magno.Y, Magno.X) * RAD_TO_DEG) - COEF_HEADING, 180);
 }
-  
+
+int16_t BNO_Sensor::getRadiusCompute(int16_t *Axis) {
+    return sqrt(Axis[0] * Axis[0] + Axis[1] * Axis[1] + Axis[2] * Axis[2]);
+}
+
 BNO_Sensor BNO;

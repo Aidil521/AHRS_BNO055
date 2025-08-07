@@ -80,6 +80,7 @@ typedef class BNO_Sensor : I2C_Device  {
   bool getTemperature(int8_t *Temp);  
   bool getAllData(BNO055_t *AHRS);
   float getHeading(Axis_4D_t *Qua, Axis_3D_t *Mag);
+  int16_t getRadiusCompute(int16_t *Axis);
   
   private:
   #define wrap(x, y) ((x > y) ? (x - (2 * y)) : (x < -y) ? (x + (2 * y)) : (x))
