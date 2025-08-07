@@ -1,6 +1,6 @@
 {
-    "configuration": "PSRAM=disabled,PartitionScheme=default,CPUFreq=240,FlashMode=qio,FlashFreq=80,FlashSize=4M,UploadSpeed=921600,DebugLevel=none",
-    "board": "esp32:esp32:esp32",
-    "sketch": "examples\\getAllData\\getAllData.ino",
+    "configuration": "pnum=NUCLEO_F767ZI,upload_method=MassStorage,xserial=generic,usb=none,xusb=FS,opt=osstd,dbg=none,rtlib=nano",
+    "board": "STMicroelectronics:stm32:Nucleo_144",
+    "sketch": "examples\\getEuler\\getEuler.ino",
     "port": "COM9"
 }

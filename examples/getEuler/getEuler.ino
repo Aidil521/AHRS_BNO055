@@ -8,7 +8,7 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
   Wire.begin();
-  
+   
   while (!BNO.Init(&Wire, BNO055_ADD_SLAVE_L)) { // Alternate Address: BNO055_ADD_SLAVE_H
     Serial.println("Error, failed detection ID BNO055!");
   }
