@@ -67,9 +67,9 @@ typedef class BNO_Sensor : I2C_Device  {
   void getMagCalib(int16_t *mag_offs);
   void getGyrCalib(int16_t *gyr_offs);
 
-  bool getAccRaw(int16_t *Acc);
-  bool getMagRaw(int16_t *Mag);
-  bool getGyrRaw(int16_t *Gyr);
+  bool getAccRaw(int16_t *Acc, size_t len = 6);
+  bool getMagRaw(int16_t *Mag, size_t len = 6);
+  bool getGyrRaw(int16_t *Gyr, size_t len = 6);
   bool getAccelaration(Axis_3D_t *Acc);
   bool getMagnetometer(Axis_3D_t *Mag);
   bool getGyroscope(Axis_3D_t *Gyr);

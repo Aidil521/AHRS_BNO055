@@ -332,16 +332,16 @@ void BNO_Sensor::getGyrCalib(int16_t *gyr_offs) {
     gyr_offs[2] = (int16_t)(GyrSum[2] / 256);
 }
 
-bool BNO_Sensor::getAccRaw(int16_t *Acc) {
-    return ReadBytes(BNO055_ACC_DATA_X_LSB, (uint8_t*)Acc, 6);
+bool BNO_Sensor::getAccRaw(int16_t *Acc, size_t len) {
+    return ReadBytes(BNO055_ACC_DATA_X_LSB, (uint8_t*)Acc, len);
 }
 
-bool BNO_Sensor::getMagRaw(int16_t *Mag) {
-    return ReadBytes(BNO055_MAG_DATA_X_LSB, (uint8_t*)Mag, 6);
+bool BNO_Sensor::getMagRaw(int16_t *Mag, size_t len) {
+    return ReadBytes(BNO055_MAG_DATA_X_LSB, (uint8_t*)Mag, len);
 }
 
-bool BNO_Sensor::getGyrRaw(int16_t *Gyr) {
-    return ReadBytes(BNO055_GYR_DATA_X_LSB, (uint8_t*)Gyr, 6);
+bool BNO_Sensor::getGyrRaw(int16_t *Gyr, size_t len) {
+    return ReadBytes(BNO055_GYR_DATA_X_LSB, (uint8_t*)Gyr, len);
 }
 
 bool BNO_Sensor::getAccelaration(Axis_3D_t *Acc) {
